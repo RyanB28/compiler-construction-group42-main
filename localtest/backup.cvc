@@ -1,0 +1,45 @@
+/*
+* Ghetto compiler test file.
+
+*/
+
+export int main() {
+    int iadd = 1+2;
+    float fadd = 1.2 + 1.2;
+
+    int isub = 2-1;
+    float fsub = 2.5 - 1.5;
+
+    int imul = 2*2;
+    float fmul = 2.4*2.4;
+
+    int idiv = 1/2;
+    float fdiv = 1.2/0.5;
+    
+    int irem = 9 % 3;
+
+    bool sdf = true && true;
+
+    bool ilt = 1 < 2;
+    bool flt = 1.2 < 2.1;
+
+    bool igt = 2 > 1;
+    bool fgt = 2.1 > 2.1;
+
+    bool ile = 1 <= 2;
+    bool fle = 1.2 <= 2.1;
+
+    bool ige = 2 >= 1;
+    bool fge = 2.1 >= 1.2;
+
+    bool ine = 1 != 2;
+    bool fne = 1.2 != 2.1;
+    bool bne = true != false;
+
+    bool ieq = 1 == 2;
+    bool feq = 1.2 == 1.2;
+    bool beq = true == true;
+
+    bool i = true && true;
+    return 0;
+}

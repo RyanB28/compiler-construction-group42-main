@@ -1,0 +1,30 @@
+extern int scanInt();
+extern void printInt( int val); 
+extern void printNewlines(int num);
+
+extern bool isprime(int num);
+extern int fib(int num1);
+
+export void fibs() {
+    int i;
+    i = fib(scanInt());
+    printInt(i);
+}
+
+export void primes() {
+    int num;
+    int i;
+    bool isprimenumber;
+
+    num = scanInt();
+
+    i = 1;
+    while(i < num) {
+        isprimenumber = isprime(i);
+        if(isprimenumber) {
+            printInt(i);
+            printNewlines(1);
+        }
+        i = i + 1;
+    }
+}

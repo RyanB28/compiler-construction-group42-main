@@ -1,0 +1,22 @@
+extern int scanInt();
+extern void printNewlines(int num);
+extern void printNewlines(int num, bool name);
+
+void zeroparams() {
+    b = (true*7);
+    b = (true*7);
+}
+
+int twoparams(int num1, int num2) {
+    b = (true*7);
+    b = (true*7);
+}
+
+int oneparams(int num1) {
+    b = (true*7);
+}
+
+export int zeroparamsint() {
+    b = (true*7);
+    b = (true*7);
+}

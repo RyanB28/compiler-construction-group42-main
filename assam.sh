@@ -1,0 +1,1 @@
+./bin/civcc -noopt -o ./localtest/output.s ./localtest/init.cvc

@@ -1,0 +1,98 @@
+// default
+extern void printNewlines(int num);
+
+// imports array.cvc
+extern void matMul( float[m,n] a, float[o,p] b, float[q,l] c);
+extern void printIntVec(int[n] vec);
+extern void printFloatVec( float[n] vec);
+extern void printIntMat( int[m,n] mat);
+extern void printFloatMat( float[m,n] mat);
+extern void scanIntVec( int[n] vec);
+extern void scanFloatVec( float[n] vec); 
+
+// imports coreio.cvc
+extern void fibs();
+extern void primes();
+
+// coreio.cvc
+void fibsTest() {
+    fibs();
+}
+
+void primesTest() {
+    primes();
+}
+
+// array.cvc
+void printFloatVecTest() {
+    float[2,2] x;
+    x[0, 0] = 0.0;
+    x[0, 1] = 0.0;
+    x[1, 0] = 1.0;
+    x[1, 1] = 1.0;
+    printFloatMat(x);
+}
+void printIntMatTest() {
+    int[2,2] x;
+    x[0, 0] = 0;
+    x[0, 1] = 0;
+    x[1, 0] = 1;
+    x[1, 1] = 1;
+    printIntMat(x);
+}
+
+void scanIntVecTest() {
+    int[2] i; 
+    scanIntVec(i);
+    printIntVec(i);
+}
+
+void scanFloatVecTest() {
+    float[2] x;
+    scanFloatVec(x);
+    printFloatVec(x);
+}
+
+void matMulTest() {
+    float[2,2] x;
+    float[2,2] y;
+    float[2,2] z;
+
+    x[0,0] = 1.0;
+    x[0,1] = 1.0;
+    x[1,0] = 2.0;
+    x[1,1] = 2.0;
+
+    y[0,0] = 1.0;
+    y[0,1] = 1.0;
+    y[1,0] = 2.0;
+    y[1,1] = 2.0;
+
+    matMul(x,y,z);
+    printFloatMat(z);
+}
+
+export int main() {
+    // Test coreio.cvc
+    fibsTest();
+    printNewlines(2);
+
+    primesTest();
+    printNewlines(4);
+    
+    // Test array.cvc
+    matMulTest();
+    printNewlines(2);
+
+    scanFloatVecTest();
+    printNewlines(2);
+
+    scanIntVecTest();
+    printNewlines(2);
+
+    printIntMatTest();
+    printNewlines(2);
+
+    printFloatVecTest();
+    return 0;
+}

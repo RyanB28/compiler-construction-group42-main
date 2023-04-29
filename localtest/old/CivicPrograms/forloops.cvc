@@ -1,0 +1,7 @@
+void main() {
+    int i;
+    
+    for(int p = 10, 200) {
+        i = p;
+    }
+}

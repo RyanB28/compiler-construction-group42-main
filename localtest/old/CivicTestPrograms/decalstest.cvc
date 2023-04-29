@@ -1,0 +1,7 @@
+int i;
+bool j;
+float k;
+
+int tt = 4534;
+float tj = 5.0;
+bool tl = true;

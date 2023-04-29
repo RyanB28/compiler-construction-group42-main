@@ -1,0 +1,10 @@
+; function "main" with 0 parameters and 1 local vars
+main:
+    esr 1
+                           ; local var "i" at index 0
+    iloadc 0               ; 1
+    istore 0               ; i = 1;
+    iload_0                ; i
+    ireturn                ; return i;
+
+.const int 1               ; index 0

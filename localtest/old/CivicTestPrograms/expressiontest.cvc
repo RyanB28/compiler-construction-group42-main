@@ -1,0 +1,20 @@
+int i = 5;
+int i = 5+5;
+int i = 5-5;
+int i = 5*5;
+int i = 5/5;
+int i = 5==5;
+int i = 5%5;
+int i = 5>5;
+int i = 5<=5;
+int i = 5<5;
+int i = 5>=5;
+int i = 5 || 5;
+int i = 5 && 5;
+
+int i = !5;
+int i = -5;
+int i = -(5||3);
+
+int i = (bool) 5;
+int i = (void) 2;

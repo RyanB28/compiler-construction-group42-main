@@ -1,0 +1,11 @@
+build-debug/*
+build-g3/*
+cmake
+coconut
+CMakeLists.txt
+test/CivicTestPrograms/testSuite
+test/_tmp.s
+test/_tmp.out
+.vscode/settings.json
+localtest/_temp.out
+localtest/_temp.out

@@ -1,0 +1,18 @@
+extern void printInt(int val);
+extern void printNewlines(int num);
+
+int a = 1;
+int b = 10;
+
+void bar() {
+    // initializer uses global variable 'a'
+    int a = a + 1;
+    printInt(a);
+    printNewlines(1);
+}
+
+export int main() {
+
+    bar();  // 2
+    return 0;
+}

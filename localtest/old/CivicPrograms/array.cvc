@@ -1,0 +1,91 @@
+extern void printFloat(float val); 
+extern void printInt(int val); 
+extern void printNewlines(int num);
+extern void printSpaces( int num);
+extern int scanInt( );
+extern float scanFloat( );
+
+
+export void printIntVec(int[n] vec) {
+    for (int i = 0, n) {
+        printInt(vec[i]);
+        printNewlines(1);
+    }
+}
+
+export void printFloatVec( float[n] vec) {
+    for (int i = 0, n) {
+        printFloat(vec[i]);
+        printNewlines(1);
+    }
+}
+export void printIntMat( int[m,n] mat) {
+    for(int x = 0, m) {
+        for (int y = 0, n) {
+            printInt(mat[x,y]);
+            printSpaces(3);
+        }
+        printNewlines(1);
+    }
+} 
+
+export void printFloatMat( float[m,n] mat) {
+    for(int x = 0, m) {
+        for (int y = 0, n) {
+            printFloat(mat[x,y]);
+            printSpaces(3);
+        }
+        printNewlines(1);
+    }
+}
+
+export void scanIntVec( int[n] vec) {
+    for (int i = 0, n) {
+        vec[i] = scanInt();
+    }
+}
+export void scanFloatVec( float[n] vec) {
+    for (int i = 0, n) {
+        vec[i] = scanFloat();
+    }
+}
+
+export void matMul( float[m,n] a, float[o,p] b, float[q,l] c) {
+    int i;
+    int j;
+    if(!(m == q &&  p == l)) {
+        printInt(0);
+        return; 
+    }
+
+    for(int i = 0, m) {
+        for(int j = 0, p) {
+            c[i, j] = 0.0; // This is initializing, can be removed later
+            for(int k = 0, o) {
+                c[i, j] = c[i, j] + (a[i,k]*b[k,j]);
+            }
+        } 
+    }
+    return;
+}
+
+export int main() {
+    float[2,2] x;
+    float[2,2] y;
+    float[2,2] z;
+
+    x[0,0] = 1.0;
+    x[0,1] = 1.0;
+    x[1,0] = 2.0;
+    x[1,1] = 2.0;
+
+    y[0,0] = 1.0;
+    y[0,1] = 1.0;
+    y[1,0] = 2.0;
+    y[1,1] = 2.0;
+
+    matMul(x,y,z);
+    printFloatMat(z);    
+
+    return 0;
+}

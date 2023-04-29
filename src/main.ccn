@@ -1,0 +1,518 @@
+/**
+ *
+ * Authors: Ryan Brispat, Joshua Turpijn
+ * Programme: Pre-Master Software Engineering
+ * Date: 02 / 04 / 2023
+ * 
+ * This file defines the backbone of the compiler.
+ *
+ */
+
+start phase EntryPoint {
+    info = "Denotes the entry point of your compiler",
+
+    actions {
+        pass SPdoScanParse;
+        initalize;
+        SymbolTable;
+        blub;
+        codeGeneration;
+        Print;
+    }
+};
+
+phase initalize {
+    actions {
+        traversal ReplaceLoops {
+            uid = RL,
+            nodes = {FunBody, Stmts, For, DoWhile, Var, Varlet }
+        };
+    }
+};
+
+phase SymbolTable {
+    actions {
+        traversal CreateSymbolTable {
+            uid = CST,
+            nodes = { Var, VarLet, FunCall, GlobDef, VarDecl, GlobDecl, fundef, Param, funbody, Program, Return }
+        };
+        traversal TypeChecking {
+            uid = TC,
+            nodes = {
+                Float, Bool, Num, // Constants
+                Binop, Monop, // Operations
+                FunDef,GlobDecl, //Decl
+                Var, Varlet, VarDecl, // Vars
+                Cast, FunCall, Var, ArrExpr, // Expressions
+                Assign, IfElse, DoWhile, While, For, Return, // Statements
+                Program // root
+            },
+            travdata {
+                user htable_ptr TC_typetable,
+                user htable_ptr TC_errortable
+            }
+        };
+        traversal RegularAssignments {
+            uid = RS,
+            nodes = { GlobDef, VarDecl, FunBody, Program, Decls }
+        };
+    }
+};
+
+phase blub {
+    actions {
+        traversal BoolJunction {
+            uid = BJ,
+            nodes = { Binop }
+        };
+        traversal CastToTernary {
+            uid = CTT,
+            nodes = { Cast }
+        };
+    }
+};
+
+phase codeGeneration {
+    actions {
+        traversal indexeren {
+            uid = CGI,
+            nodes = {
+                Float, Bool, Num, // ifbstore
+                GlobDecl, //ifbstore
+                VarDecl, // ifbstore
+                Assign, // ifbstore
+                GlobDef, FunDef,
+                Program // root
+            },
+            travdata {
+                user htable_ptr TC_typetable
+            }
+        };
+        traversal evalueren {
+            uid = CG,
+            nodes = {
+                Float, Bool, Num, // ifbloadc
+                Binop, Monop, conditionalexpression, // ifbbinop ifbmonop
+                FunDef, // isr's 
+                Var, Varlet, // ifbload
+                FunCall, // esr 
+                Assign, IfElse, DoWhile, While, Return, Cast,  // branchen
+                Program // print
+            }
+        };
+    }
+};
+
+
+traversal Print {
+    uid = PRT
+};
+
+/*** AST ***/
+enum Types {
+    // T_ collides with bison/flex generated stuff.
+    prefix = CT,
+    values {
+        int, float, bool, void
+    }
+};
+
+enum MonOpEnum {
+    prefix = MO,
+    values {
+        not, neg
+    }
+};
+
+enum binop_type {
+    prefix = BO,
+    values {
+        add, sub, mul, div, mod, lt, le, gt, ge, eq, ne,
+        and, or
+    }
+};
+
+
+nodeset Constants = {Float, Bool, Num};
+
+nodeset Operations = {Binop, Monop, conditionalexpression};
+
+nodeset Decl = {GlobDef, GlobDecl, FunDef};
+
+nodeset Vars = {VarDecl, Var, VarLet};
+
+nodeset Expr = {Cast, FunCall, Var, ArrExpr} | (Constants | Operations);
+
+nodeset Stmt = {Assign, ExprStmt, IfElse, While, DoWhile, For, Return};
+
+// Link you need to adapt.
+// In the old framework it points to node* (so can be everything).
+// You need to adapt it when working with the symbol tables.
+// I put it as a decl now, because an empty nodeset is not allowed.
+nodeset Link = {STE};
+
+root node Program {
+    children {
+        STE symbol_table, // THIS IS FOR THE GLOBAL SYMBOL TABLE
+        CGC cg_const_table,
+        CGE cg_error_table,
+        CGG cg_global_table,
+        CGEE cg_export_table,
+        CGIE cg_import_table,
+        Decls decls { constructor, mandatory }
+    }
+};
+
+node Decls {
+    children {
+        Decl decl { constructor }, // Ryan heeft hier de mandatory weggehaald, zolang het niet tegen problemen aanloopt laat ik het zo.
+        Decls next { constructor }
+    }
+};
+
+node Exprs {
+    children {
+        Expr expr { constructor, mandatory },
+        Exprs next { constructor }
+    }
+};
+
+node ArrExpr {
+    children {
+        Exprs exprs { constructor, mandatory }
+    },
+    attributes {
+        Types inferredtype
+    }
+};
+
+//Indeces (array)
+node Ids {
+    children {
+        Ids next
+    },
+    attributes {
+        string name
+    }
+};
+
+node ExprStmt {
+    children {
+        Expr expr { constructor, mandatory }
+    }
+};
+
+node Return {
+    children {
+        Expr expr { constructor }
+    },
+    attributes {
+        Types type
+    }
+};
+
+node FunCall {
+    children {
+        Exprs args { constructor }
+    },
+    attributes {
+        string name { constructor },
+        Link decl,
+        Types inferredtype
+    }
+};
+
+node Cast {
+    children {
+        Expr expr {constructor, mandatory }
+    },
+    attributes {
+        Types type {constructor},
+        Types inferredtype
+    }
+};
+
+node FunDefs {
+    children {
+        FunDef fundef { constructor, mandatory },
+        FunDefs next
+    }
+};
+
+node FunDef {
+    children {
+        FunBody body { constructor },
+        Param params { constructor }
+    },
+    attributes {
+        Types type { constructor },
+        string name { constructor },
+        bool export { constructor },
+        STE symbol_table // THIS IS FOR THE LOCAL SYMBOL TABLE
+    }
+};
+
+node FunBody {
+    children {
+        VarDecl decls {constructor},
+        FunDefs local_fundefs,
+        Stmts stmts {constructor}
+    }
+};
+
+node IfElse {
+    children {
+        Expr cond { constructor, mandatory },
+        Stmts then { constructor },
+        Stmts else_block { constructor }
+    }
+};
+
+node While {
+    children {
+        Expr cond { constructor, mandatory },
+        Stmts block { constructor }
+    }
+};
+
+node DoWhile {
+    children {
+        Expr cond { constructor, mandatory },
+        Stmts block { constructor }
+    }
+};
+
+node For {
+    children {
+        Expr start_expr { constructor, mandatory }, // This type will be a num
+        Expr stop { constructor, mandatory }, // This type will be a num
+        Expr step {constructor }, // This type will be a num
+        Stmts block {constructor }
+    },
+
+    attributes {
+        string var { constructor }
+    }
+};
+
+node GlobDecl {
+    children {
+        Ids dims { constructor }
+    },
+
+    attributes {
+        Types type {constructor },
+        string name {constructor }
+    }
+};
+
+node GlobDef {
+    children {
+        Exprs dims,
+        Expr init { constructor }
+    },
+
+    attributes {
+        Link decl,
+        Types type { constructor },
+        string name { constructor },
+        bool export { constructor }
+    }
+};
+
+node Param {
+    children {
+        Ids dims,
+        Param next { constructor }
+    },
+
+    attributes {
+        string name { constructor },
+        Types type { constructor }
+    }
+};
+
+node VarDecl {
+    children {
+        Exprs dims,
+        Expr init { constructor },
+        VarDecl next { constructor }
+    },
+
+    attributes {
+        string name {constructor},
+        Types type {constructor},
+        Link decl,
+        Types inferredtype
+    }
+};
+
+node Stmts {
+    children {
+        Stmt stmt { constructor, mandatory },
+        Stmts next { constructor }
+    }
+};
+
+node Assign {
+    children {
+        VarLet let { constructor, mandatory },
+        Expr expr { constructor, mandatory }
+    }
+};
+
+node Binop {
+    children {
+        Expr left { constructor, mandatory },
+        Expr right { constructor, mandatory }
+    },
+
+    attributes {
+        binop_type op { constructor },
+        Types inferredtype
+    }
+};
+
+node Monop {
+    children {
+        Expr operand { constructor, mandatory }
+    },
+
+    attributes {
+        MonOpEnum op { constructor },
+        Types inferredtype
+    }
+};
+
+node VarLet {
+    children {
+        Exprs indices
+    },
+
+    attributes {
+        string name { constructor },
+        Link decl {constructor},
+        Types inferredtype
+    }
+};
+
+node Var {
+    children {
+        Exprs indices
+    },
+
+    attributes {
+        string name { constructor, mandatory },
+        Link decl,
+        Types inferredtype
+    }
+};
+
+node Num {
+    attributes {
+        int val { constructor },
+        int constid,
+        Types inferredtype
+    }
+};
+
+node Float {
+    attributes {
+        float val { constructor },
+        int constid,
+        Types inferredtype
+    }
+};
+
+node Bool {
+    attributes {
+        bool val { constructor },
+        int constid,
+        Types inferredtype
+    }
+};
+
+node conditionalexpression {
+    children {
+        Expr predexpr { constructor, mandatory },
+        Expr trueexpr { constructor, mandatory },
+        Expr elseexpr { constructor, mandatory }
+    },
+    attributes {
+        Types inferredtype
+    }
+};
+
+node STE {
+    children {
+        STE next
+    },
+    attributes {
+        Types type { constructor },
+        string name { constructor },
+        int scope { constructor },
+        int id { constructor },
+        Param params { constructor }
+    }
+};
+
+// Code Generation Constant entry
+node CGC {
+    children {
+        CGC next
+    },
+    attributes {
+        int index { constructor }, // This is index
+        Types type { constructor },
+        int valuei { constructor },
+        bool valueb { constructor },
+        float valuef { constructor }
+    }
+};
+
+// Code Generation Error entry
+node CGE {
+    children {
+        STE next
+    },
+    attributes {
+        int id { constructor }
+    }
+};
+
+// Code Generation Global entry
+node CGG {
+    children {
+        CGG next
+    },
+    attributes {
+        int id { constructor },
+        Types type { constructor },
+        string name { constructor }
+    }
+};
+
+// Code Generation Export entry
+node CGEE {
+    children {
+        CGEE next
+    },
+    attributes {
+        string funname { constructor },
+        Types type { constructor },
+        string labelname { constructor },
+        Param params { constructor }
+    }
+};
+// Code Generation import entry
+node CGIE {
+    children {
+        CGIE next
+    },
+    attributes {
+        string funname { constructor },
+        Types type { constructor },
+        Param params { constructor },
+        int index { constructor }
+    }
+};

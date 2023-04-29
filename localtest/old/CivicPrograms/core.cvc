@@ -1,0 +1,57 @@
+extern int scanInt();
+extern void printInt( int val); 
+
+export int gcd(int num1, int num2) {
+    int minimalvalue;
+    int numb1; 
+    int numb2;
+
+    if(num1 > num2) {
+        minimalvalue = num2;
+    }
+    else {
+        minimalvalue = num1;
+    }
+    while(minimalvalue > 0) {
+        numb1 = num1 % minimalvalue;
+        numb2 = num2 % minimalvalue;
+        if(numb1 == 0 && numb2 == 0) {
+            return minimalvalue;
+        }
+        minimalvalue = minimalvalue - 1;
+    }
+    return 1;
+}
+
+export int fac(int num1) {
+    if(num1 == 1) {
+        return 1;
+    }
+    return fac(num1 - 1) * num1;
+}
+
+export int fib(int num1) {
+    if(num1 == 0) {
+        return 0;
+    }
+    if(num1 == 1) {
+        return 1;
+    }
+    return fib(num1 - 1) + fib(num1 - 2);
+}
+
+export bool isprime(int num) {
+    int i;
+    if(num > 1) {
+
+    }
+    i = 2;
+    while(i < num) {
+        if((num % i) == 0) {
+            return false;
+        }
+        i = i + 1;
+    }
+    return true;
+}
+

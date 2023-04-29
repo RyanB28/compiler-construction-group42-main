@@ -1,0 +1,67 @@
+void testStatements() {
+    int i;
+    bool t;
+    
+
+    testFunction();
+    testFunction(a);
+    testFunction(a, b);
+    testFunction(a, b, c);
+
+    while(1) {
+        b = (true*7);
+    }
+    while(1) {
+    }
+    while(1) {
+        while(1) {
+        b = (true*7);
+         }
+    }
+
+    for(int i = 0, 5) {
+        b = (true*7);
+    }
+    for(int i = 0, 5) {
+
+    }
+
+    for(int i = 0, 5, 2) {
+        
+    }
+    for(int i = 0, 5, 2) {
+        b = (true*7);
+    }
+
+    for(int i = 0, 5, 2) {
+        b = (true*7);
+    }
+
+    for(int i = 0, 5) {
+    }
+
+    for(int i = 0, 5, 2) {
+    } 
+
+    do {
+        b = (true*7);
+    } while(1);
+
+    do {
+    } while(1);
+
+    return 1;
+    return (true*7);
+    return;
+
+    if(true) {
+        b = (true*7);
+    }
+
+    if(true) {
+        b = (true*7);
+    }
+    else {
+        b = (true*7);
+    }
+}

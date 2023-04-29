@@ -1,0 +1,30 @@
+int i = 1;
+float j = (float) i;
+bool k = true;
+
+
+int getbools(bool ds, bool psp) {
+    return 1;
+}
+
+int getbool(bool tr) {
+    return 1;
+}
+
+float getint() {
+    return 1.1;
+}
+
+void getblob() {
+    return;
+}
+
+void test() {
+    getbool(1); // IN FUNCALL NOT RIGHT ARGUMENT GIVEN
+    getbool(); // IN FUNCALL PSYCH THAT'S THE WRONG ARITY
+    getbools(true); // FUNCALL NOT ENOUGH ARGUMENTS GIVEN 
+    getbool(true, true, true); // type error too many args given
+
+    getbools(true, true);
+    getint();
+}

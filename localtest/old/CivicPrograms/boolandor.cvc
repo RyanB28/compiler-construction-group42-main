@@ -1,0 +1,19 @@
+bool foo() {
+    return true;
+}
+bool boo() {
+    return false;
+}
+
+void foo() {
+    bool i = true && false;
+    bool l = true || false;
+    bool k = foo() && boo();
+    bool p = foo() || boo();
+
+    int y = (int) true;
+    float t = (float) true;
+
+    bool m = (bool) 1;
+    bool m = (bool) 1.0;
+}
